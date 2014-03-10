@@ -1,11 +1,22 @@
 
-import ctypes
-import ctypes.util
+#import ctypes
+#import ctypes.util
+import os
+import socket
 
 
 class SDNotifier(object):
     def __init__(self):
-        self.sd = ctypes.CDLL(ctypes.util.find_library("systemd-daemon"))
+        #self.sd = ctypes.CDLL(ctypes.util.find_library("systemd-daemon"))
+        pass
+
+    def __notify(self, msg):
+        #self.sd.sd_notify(0, msg)
+        if "NOTIFY_SOCKET" in os.environ:
+            client = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+            client.connect(os.environ["NOTIFY_SOCKET"])
+            client.send(msg)
+            client.close()
 
     def ready(self):
         self.__notify("READY=1")
@@ -24,7 +35,3 @@ class SDNotifier(object):
 
     def watchdog(self):
         self.__notify("WATCHDOG=1")
-
-    def __notify(self, msg):
-        #print msg
-        self.sd.sd_notify(0, msg)
