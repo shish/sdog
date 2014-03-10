@@ -12,6 +12,8 @@ Options:
   -t N, --timeout=N       Maximum seconds between pings
   -r N, --respawn=N       Delay between respawns
   -s FILE, --socket=FILE  Path to socket
+  -T NAME, --title=NAME   Daemon name (defaults to the first param after "--")
+                          (Requires setproctitle module)
   -v, --verbose           Verbose mode
 ```
 
@@ -50,5 +52,5 @@ environment; it should then write datagram packets into this socket:
 ```
 READY=1      -- signal that the daemon has loaded, and to start monitoring
 WATCHDOG=1   -- must be sent at least once every $timeout seconds
-STATUS=blah  -- update the current status message (not used yet)
+STATUS=blah  -- update the current status message
 ```
