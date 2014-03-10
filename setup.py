@@ -10,7 +10,7 @@ requires = [
     ]
 
 setup(name='SDog',
-      version='0.0',
+      version='0.1',
       description='SDog',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
@@ -27,6 +27,6 @@ setup(name='SDog',
       install_requires=requires,
       entry_points="""\
       [console_scripts]
-      sdog = sdog:main
+      sdog = sdog.watcher:main
       """,
       )
