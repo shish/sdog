@@ -40,8 +40,8 @@ def main(argv=sys.argv):
 
 
 def launch(options, args):
+    c = Child(options, args)
     try:
-        c = Child(options, args)
         c.watch()
     finally:
         if os.path.exists(options.soc_loc):
@@ -54,11 +54,13 @@ class Child(object):
         self.args = args
         self.proc = None
         self.ready = False
+        self.sock = None
         self.last_ok = 0
-        self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
-        self.sock.bind(opts.soc_loc)
 
     def watch(self):
+        self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+        self.sock.bind(self.opts.soc_loc)
+
         while True:
             try:
                 self.poll()
