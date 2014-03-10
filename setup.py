@@ -25,8 +25,8 @@ setup(
     install_requires=[],
     extras_require = {
         'title': ["setproctitle"],
-    }
-    entry_points="""\
+    },
+    entry_points="""
         [console_scripts]
         sdog = sdog.monitor:main
     """,
