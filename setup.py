@@ -27,6 +27,6 @@ setup(name='SDog',
       install_requires=requires,
       entry_points="""\
       [console_scripts]
-      sdog = sdog.watcher:main
+      sdog = sdog.monitor:main
       """,
       )

@@ -8,6 +8,12 @@ from time import time, sleep
 from select import select
 import sys
 
+try:
+    from setproctitle import setproctitle
+except ImportError:
+    def setproctitle(title):
+        pass
+
 
 def main(argv=sys.argv):
     parser = OptionParser(usage="%prog [sdog options] -- daemon-to-run [daemon options]")
@@ -15,6 +21,8 @@ def main(argv=sys.argv):
                       help="Maximum seconds between pings", metavar="N")
     parser.add_option("-r", "--respawn", dest="respawn", type=int, default=1,
                       help="Delay between respawns", metavar="N")
+    parser.add_option("-T", "--title", dest="title",
+                      help="Set process title", metavar="NAME")
     parser.add_option("-s", "--socket", dest="soc_loc",
                       # FIXME: probably (almost certainly) insecure,
                       # need tmpfile.NamedTemporaryFile() for sockets
@@ -59,23 +67,25 @@ class Child(object):
                 self.proc = None
                 sleep(5)
 
+    def status(self, status):
+        if self.opts.verbose:
+            print status
+        setproctitle("sdog: %s: %s" % (self.opts.title or self.args[0], status))
+
     def poll(self):
         if not self.proc:
-            if self.opts.verbose:
-                print "Spawning: %s" % self.args
+            self.status("spawning: %s" % self.args)
             env = os.environ.copy()
             env["NOTIFY_SOCKET"] = self.opts.soc_loc
             self.proc = subprocess.Popen(self.args, env=env)
-            if self.opts.verbose:
-                print "Launched subprocess with PID: %d" % self.proc.pid
+            self.status("launched subprocess with PID: %d" % self.proc.pid)
             self.last_ok = time()
             self.ready = False
             return
 
         status = self.proc.poll()
         if status is not None:
-            if self.opts.verbose:
-                print "Process exited with status code %d, respawning after %d seconds" % (status, self.opts.respawn)
+            self.status("Process exited with status code %d, respawning after %d seconds" % (status, self.opts.respawn))
             self.proc = None
             sleep(self.opts.respawn)
             return
@@ -90,11 +100,10 @@ class Child(object):
                 if k == "WATCHDOG" and v == "1":
                     self.last_ok = time()
                 if k == "READY" and v == "1" and not self.ready:
-                    if self.opts.verbose:
-                        print "Daemon is ready"
+                    self.status("Daemon is ready")
                     self.ready = True
                 if k == "STATUS":
-                    self.status = v
+                    self.status(v)
                 if k == "ERRNO":
                     self.errno = v
                 if k == "BUSERROR":
@@ -103,8 +112,7 @@ class Child(object):
                     self.mainpid = v
 
         if time() > self.last_ok + self.opts.timeout:
-            if self.opts.verbose:
-                print "No OK message for %d seconds, killing child" % (time() - self.last_ok)
+            self.status("No OK message for %d seconds, killing child" % (time() - self.last_ok))
             self.proc.kill()
             self.proc = None
 
