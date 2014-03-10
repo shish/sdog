@@ -8,7 +8,7 @@ CHANGES = ""  # open(os.path.join(here, 'CHANGES.txt')).read()
 
 setup(
     name='SDog',
-    version='0.2',
+    version='0.2.1',
     description='SDog',
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
