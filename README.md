@@ -47,6 +47,8 @@ Protocol
 The daemon will be launched with `NOTIFY_SOCKET=/some/path.sock` in its
 environment; it should then write datagram packets into this socket:
 
+```
 READY=1      -- signal that the daemon has loaded, and to start monitoring
 WATCHDOG=1   -- must be sent at least once every $timeout seconds
 STATUS=blah  -- update the current status message (not used yet)
+```
