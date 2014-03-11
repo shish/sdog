@@ -26,21 +26,21 @@ There is the sdog.notifier module
 from sdog.notifier import SDNotifier
 
 def main():
-	# Create the notifier
+    # Create the notifier
     sd = SDNotifier()
 
-	# Connect to the work queue and signal that we're ready to go
-	work_queue = WorkQueue("localhost:1234")
-	sd.ready()
+    # Connect to the work queue and signal that we're ready to go
+    work_queue = WorkQueue("localhost:1234")
+    sd.ready()
 
-	while True:
-		# Get some work and signal that we're working on it
-	    item = work_queue.get()
-		sd.status("Processing %s" % item.name)
+    while True:
+        # Get some work and signal that we're working on it
+        item = work_queue.get()
+        sd.status("Processing %s" % item.name)
 
-		# Do the work then signal that we are alive and running successfully
-		do_some_work(item)
-		sd.watchdog()
+        # Do the work then signal that we are alive and running successfully
+        do_some_work(item)
+        sd.watchdog()
 ```
 
 Protocol
