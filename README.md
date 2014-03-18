@@ -4,6 +4,9 @@ sdog
 A process monitor using an extremely limited (but still useful enough for me)
 subset of the systemd watchdog protocol
 
+"450 downloads in the last week" -- are people actually using this, or is pypi
+just full of bots? o.o;;  I welcome your feedback if you are actually a person :)
+
 ```
 Usage: sdog [options] -- daemon-to-run [daemon options]
 
